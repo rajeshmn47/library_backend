@@ -48,51 +48,51 @@ router.post("/googlelogin", async function (req, res, next) {
       user1.password = "password";
       user1.phonenumber = 7259293140;
       user1.wallet = 10000;
-          User.findOne(
-            { email: response.payload.email },
-            async function (err, user) {
+      User.findOne(
+        { email: response.payload.email },
+        async function (err, user) {
+          if (err) {
+            console.log("Error in finding user in Sign-in ");
+            res.status(400).json({
+              message: "something went wrong",
+            });
+          }
+          if (!user) {
+            transaction.createTransaction(userId, "", 100, "extra cash");
+            User.create(user1, async function (err, user) {
               if (err) {
-                console.log("Error in finding user in Sign-in ");
+                console.log("rajesh");
+                console.log(
+                  "Error in creating a user while account activation",
+                  err
+                );
                 res.status(400).json({
                   message: "something went wrong",
                 });
-              }
-              if (!user) {
-                transaction.createTransaction(userId, "", 100, "extra cash");
-                User.create(user1, async function (err, user) {
-                  if (err) {
-                    console.log("rajesh");
-                    console.log(
-                      "Error in creating a user while account activation",
-                      err
-                    );
-                    res.status(400).json({
-                      message: "something went wrong",
-                    });
-                  } else {
-                    var userid = user._id;
-                    console.log("SignUp successfull!");
-                    const token = jwt.sign({ userid }, activatekey, {
-                      expiresIn: "500000m",
-                    });
-                    res.status(200).json({
-                      success: true,
-                      user,
-                      server_token,
-                    });
-                  }
-                });
               } else {
-                console.log("kuttheee");
+                var userid = user._id;
+                console.log("SignUp successfull!");
+                const token = jwt.sign({ userid }, activatekey, {
+                  expiresIn: "500000m",
+                });
                 res.status(200).json({
-                  message: "user already exists",
-                  success: false,
+                  success: true,
+                  user,
+                  server_token,
                 });
               }
-            })
-        .catch((err) => {
-          console.log("Error : " + err);
-        });
+            });
+          } else {
+            console.log("kuttheee");
+            res.status(200).json({
+              message: "user already exists",
+              success: false,
+            });
+          }
+        }
+      ).catch((err) => {
+        console.log("Error : " + err);
+      });
     }
   } else {
     res.json({
@@ -104,7 +104,7 @@ router.post("/googlelogin", async function (req, res, next) {
 
 function checkloggedinuser(req, res, next) {
   const tokenheader = req.body.headers || req.headers["servertoken"];
-console.log(tokenheader,req.headers,'tokenheader')
+  console.log(tokenheader, req.headers, "tokenheader");
   if (tokenheader) {
     jwt.verify(tokenheader, activatekey, function (err, decoded) {
       if (!err) {
@@ -120,57 +120,52 @@ console.log(tokenheader,req.headers,'tokenheader')
 }
 
 router.post("/register", async (req, res) => {
-    console.log(req.body,'body')
+  console.log(req.body, "body");
   const user1 = new User();
   user1.username = req.body.username;
   user1.email = req.body.email;
   user1.password = req.body.password;
-  user1.phonenumber = 'phonenumber';
-  user1.type="admin";
-      User.findOne({ email: req.body.email }, async function (err, user) {
+  user1.phonenumber = "phonenumber";
+  user1.type = "admin";
+  User.findOne({ email: req.body.email }, async function (err, user) {
+    if (err) {
+      console.log("Error in finding user in Sign-in ");
+      res.status(400).json({
+        message: "something went wrong",
+      });
+    }
+    if (!user) {
+      User.create(user1, async function (err, user) {
         if (err) {
-          console.log("Error in finding user in Sign-in ");
+          console.log("rajesh");
+          console.log("Error in creating a user while account activation", err);
           res.status(400).json({
             message: "something went wrong",
           });
-        }
-        if (!user) {
-          User.create(user1, async function (err, user) {
-            if (err) {
-              console.log("rajesh");
-              console.log(
-                "Error in creating a user while account activation",
-                err
-              );
-              res.status(400).json({
-                message: "something went wrong",
-              });
-            } else {
-              var userid = user._id;
-              console.log("SignUp successfull!");
-
-              const token = jwt.sign({ userid }, activatekey, {
-                expiresIn: "5000000m",
-              });
-
-              res.status(200).json({
-                message:
-                  "enter otp recieved on your mail to activate your account",
-                success: true,
-              });
-            }
-          });
         } else {
-          console.log("kuttheee");
+          var userid = user._id;
+          console.log("SignUp successfull!");
+
+          const token = jwt.sign({ userid }, activatekey, {
+            expiresIn: "5000000m",
+          });
+
           res.status(200).json({
-            message: "user already exists",
-            success: false,
+            message: "enter otp recieved on your mail to activate your account",
+            success: true,
           });
         }
-    })
-    .catch((err) => {
-      console.log("Error : " + err);
-    });
+      });
+    } else {
+      console.log("kuttheee");
+      res.status(200).json({
+        message: "user already exists",
+        success: false,
+      });
+    }
+  }).catch((err) => {
+    console.log("Error : " + err);
+  });
 });
 router.post("/otp", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
@@ -204,7 +199,7 @@ router.post("/otp", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-    console.log(req.body,'body')
+  console.log(req.body, "body");
   const user = await User.findOne({ email: req.body.myform.email });
   if (user) {
     console.log(user, "user");
@@ -337,9 +332,23 @@ router.post("/changepassword", async (req, res) => {
 });
 
 router.get("/loaduser", checkloggedinuser, async function (req, res) {
-  const user = await User.findOne({ _id: { $eq: req.body.uidfromtoken } });
-  res.status(200).json({
-    message: user,
-  });
+  try {
+    const user = await User.findOne({ _id: { $eq: req.body.uidfromtoken } });
+    if (user) {
+      res.status(200).json({
+        message: user,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "no user",
+      });
+    }
+  } catch (e) {
+    res.status(400).json({
+      success: false,
+      message: "no user",
+    });
+  }
 });
 module.exports = router;

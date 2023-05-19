@@ -16,7 +16,7 @@ app.use(
   })
 );
 app.use("/auth/", user);
-app.use("/",book)
+app.use("/", book);
 
 const uri =
   "mongodb+srv://rajeshmn47:uni1ver%40se@cluster0.bpxam.mongodb.net/library?retryWrites=true&w=majority";

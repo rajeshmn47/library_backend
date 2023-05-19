@@ -15,6 +15,26 @@ const bookSchema = new mongoose.Schema(
       type: Array,
       required: false,
     },
+    requests: [
+      {
+        requestedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
+          required: true,
+          default: "",
+        },
+        from: {
+          type: Date,
+          default: Date.now(),
+        },
+        to: {
+          type: Date,
+          default: Date.now(),
+        },
+        approved: { type: Boolean, default: false },
+        created: { type: Date, default: Date.now },
+      },
+    ],
     image: {
       type: String,
       required: true,
