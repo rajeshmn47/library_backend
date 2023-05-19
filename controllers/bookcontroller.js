@@ -99,11 +99,11 @@ router.get("/getbook/:id", async (req, res) => {
 });
 
 router.post("/request/:id", async (req, res) => {
-  console.log(req.body,'ReWQUEST')
+  console.log(req.body, "ReWQUEST");
   const book = await Book.findById(req.params.id);
   try {
     if (book) {
-      book.requests.push({requestedBy:req.body.userId})
+      book.requests.push({ requestedBy: req.body.userId });
       await book.save();
       const books = await Book.find();
       res.status(200).json({
