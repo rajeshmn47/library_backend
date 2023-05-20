@@ -81,6 +81,23 @@ router.get("/getbooks", async (req, res) => {
   }
 });
 
+router.get("/getbooks/:searchstring", async (req, res) => {
+  try {
+    console.log("gretbooksreqauest");
+    const books = await Book.find({ name: { $regex: req.params.searchstring } });
+    if (books) {
+      res.status(200).json({
+        message: "success",
+        data: books,
+      });
+    }
+  } catch {
+    res.status(200).json({
+      data: "not saved",
+    });
+  }
+});
+
 router.get("/getbook/:id", async (req, res) => {
   try {
     console.log("gretbooksreqauest");
