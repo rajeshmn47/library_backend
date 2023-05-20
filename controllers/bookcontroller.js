@@ -118,4 +118,26 @@ router.post("/request/:id", async (req, res) => {
   }
 });
 
+router.post("/cancelrequest/:id", async (req, res) => {
+  console.log(req.body, "cancelreqs");
+  const book = await Book.findById(req.params.id);
+  try {
+    if (book) {
+      let requests=book.requests;
+     let reqs=requests.filter((r)=>!(r.requestedBy==req.body.userId))
+      book.requests=reqs;
+      await book.save();
+      const books = await Book.find();
+      res.status(200).json({
+        message: "success",
+        books: books,
+      });
+    }
+  } catch {
+    res.status(200).json({
+      message: "not saved",
+    });
+  }
+});
+
 module.exports = router;
