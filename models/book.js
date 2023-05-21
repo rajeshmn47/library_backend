@@ -15,6 +15,21 @@ const bookSchema = new mongoose.Schema(
       type: Array,
       required: false,
     },
+    quantity: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    author: {
+      type: String,
+      required: true,
+      default: "",
+    },
+    description: {
+      type: String,
+      required: true,
+      default: "",
+    },
     requests: [
       {
         requestedBy: {

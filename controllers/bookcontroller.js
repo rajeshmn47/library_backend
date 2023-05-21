@@ -7,10 +7,13 @@ const router = express.Router();
 const Book = require("../models/book");
 
 router.post("/addbook", async (req, res) => {
+  console.log(req.body, "body");
   const status = await Book.create({
     name: req.body.name,
     postedby: req.body.postedby,
     image: req.body.url,
+    quantity: req.body.quantity,
+    author: req.body.author,
   });
   try {
     if (status) {
@@ -50,6 +53,7 @@ router.post("/edit/:id", async (req, res) => {
       book.name = req.body.name;
       book.postedby = req.body.postedby;
       book.image = req.body.url;
+      (quantity = req.body.quantity), (author = req.body.author);
       await book.save();
       const books = await Book.find();
       res.status(200).json({
@@ -84,7 +88,9 @@ router.get("/getbooks", async (req, res) => {
 router.get("/getbooks/:searchstring", async (req, res) => {
   try {
     console.log("gretbooksreqauest");
-    const books = await Book.find({ name: { $regex: req.params.searchstring } });
+    const books = await Book.find({
+      name: { $regex: req.params.searchstring },
+    });
     if (books) {
       res.status(200).json({
         message: "success",
@@ -140,9 +146,9 @@ router.post("/cancelrequest/:id", async (req, res) => {
   const book = await Book.findById(req.params.id);
   try {
     if (book) {
-      let requests=book.requests;
-     let reqs=requests.filter((r)=>!(r.requestedBy==req.body.userId))
-      book.requests=reqs;
+      let requests = book.requests;
+      let reqs = requests.filter((r) => !(r.requestedBy == req.body.userId));
+      book.requests = reqs;
       await book.save();
       const books = await Book.find();
       res.status(200).json({
