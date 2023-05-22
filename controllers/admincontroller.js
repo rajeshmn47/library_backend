@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 const User = require("../models/user");
 const activatekey = "accountactivatekey123";
+const Book = require("../models/book");
 const { OAuth2Client } = require("google-auth-library");
 const server_secret_key =
   "iamrajesh675gjhchshskijdiucacuijnuijniusjiudjcsdijcjsijcisjijsoisju";
@@ -50,6 +51,71 @@ router.get("/getuser/:id", checkadminuser, async function (req, res) {
     res.status(400).json({
       success: false,
       message: "no user",
+    });
+  }
+});
+
+router.post("/addbook",checkadminuser, async (req, res) => {
+  console.log(req.body, "body");
+  const status = await Book.create({
+    name: req.body.name,
+    postedby: req.body.postedby,
+    image: req.body.url,
+    quantity: req.body.quantity,
+    author: req.body.author,
+    description:"it is very good book"
+  });
+  try {
+    if (status) {
+      res.status(200).json({
+        message: "success",
+        statuses: status,
+      });
+    }
+  } catch {
+    res.status(200).json({
+      message: "not saved",
+    });
+  }
+});
+
+router.get("/delete/:id",checkadminuser, async (req, res) => {
+  const a = await Book.findByIdAndDelete(req.params.id);
+  try {
+    if (a) {
+      const books = await Book.find();
+      res.status(200).json({
+        message: "success",
+        books: books,
+      });
+    }
+  } catch {
+    res.status(200).json({
+      message: "not saved",
+    });
+  }
+});
+
+router.post("/edit/:id",checkadminuser, async (req, res) => {
+  console.log('hello')
+  const book = await Book.findById(req.params.id);
+  try {
+    if (book) {
+      book.name = req.body.name;
+      book.postedby = req.body.postedby;
+      book.image = req.body.url;
+      book.quantity = req.body.quantity;
+      book.author = req.body.author;
+      await book.save();
+      const books = await Book.find();
+      res.status(200).json({
+        message: "success",
+        books: books,
+      });
+    }
+  } catch {
+    res.status(200).json({
+      message: "not saved",
     });
   }
 });

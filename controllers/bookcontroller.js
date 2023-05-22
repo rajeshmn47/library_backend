@@ -6,67 +6,6 @@ const { findById } = require("../models/book");
 const router = express.Router();
 const Book = require("../models/book");
 
-router.post("/addbook", async (req, res) => {
-  console.log(req.body, "body");
-  const status = await Book.create({
-    name: req.body.name,
-    postedby: req.body.postedby,
-    image: req.body.url,
-    quantity: req.body.quantity,
-    author: req.body.author,
-  });
-  try {
-    if (status) {
-      res.status(200).json({
-        message: "success",
-        statuses: status,
-      });
-    }
-  } catch {
-    res.status(200).json({
-      message: "not saved",
-    });
-  }
-});
-
-router.get("/delete/:id", async (req, res) => {
-  const a = await Book.findByIdAndDelete(req.params.id);
-  try {
-    if (a) {
-      const books = await Book.find();
-      res.status(200).json({
-        message: "success",
-        books: books,
-      });
-    }
-  } catch {
-    res.status(200).json({
-      message: "not saved",
-    });
-  }
-});
-
-router.post("/edit/:id", async (req, res) => {
-  const book = await Book.findById(req.params.id);
-  try {
-    if (book) {
-      book.name = req.body.name;
-      book.postedby = req.body.postedby;
-      book.image = req.body.url;
-      (quantity = req.body.quantity), (author = req.body.author);
-      await book.save();
-      const books = await Book.find();
-      res.status(200).json({
-        message: "success",
-        books: books,
-      });
-    }
-  } catch {
-    res.status(200).json({
-      message: "not saved",
-    });
-  }
-});
 
 router.get("/getbooks", async (req, res) => {
   try {
