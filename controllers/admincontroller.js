@@ -55,7 +55,7 @@ router.get("/getuser/:id", checkadminuser, async function (req, res) {
   }
 });
 
-router.post("/addbook",checkadminuser, async (req, res) => {
+router.post("/addbook", checkadminuser, async (req, res) => {
   console.log(req.body, "body");
   const status = await Book.create({
     name: req.body.name,
@@ -63,7 +63,7 @@ router.post("/addbook",checkadminuser, async (req, res) => {
     image: req.body.url,
     quantity: req.body.quantity,
     author: req.body.author,
-    description:"it is very good book"
+    description: "it is very good book",
   });
   try {
     if (status) {
@@ -79,7 +79,7 @@ router.post("/addbook",checkadminuser, async (req, res) => {
   }
 });
 
-router.get("/delete/:id",checkadminuser, async (req, res) => {
+router.get("/delete/:id", checkadminuser, async (req, res) => {
   const a = await Book.findByIdAndDelete(req.params.id);
   try {
     if (a) {
@@ -96,8 +96,8 @@ router.get("/delete/:id",checkadminuser, async (req, res) => {
   }
 });
 
-router.post("/edit/:id",checkadminuser, async (req, res) => {
-  console.log('hello')
+router.post("/edit/:id", checkadminuser, async (req, res) => {
+  console.log("hello");
   const book = await Book.findById(req.params.id);
   try {
     if (book) {

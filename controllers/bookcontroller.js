@@ -6,7 +6,6 @@ const { findById } = require("../models/book");
 const router = express.Router();
 const Book = require("../models/book");
 
-
 router.get("/getbooks", async (req, res) => {
   try {
     console.log("gretbooksreqauest");
@@ -95,6 +94,50 @@ router.post("/cancelrequest/:id", async (req, res) => {
         books: books,
       });
     }
+  } catch {
+    res.status(200).json({
+      message: "not saved",
+    });
+  }
+});
+
+router.post("/ignore", async (req, res) => {
+  console.log(req.body, "cancelreqs");
+  try {
+    const book = await Book.findById(req.body.bookId);
+    let requests = book.requests;
+    let r = (requests.find((r) => r._id == req.body._id).approved = false);
+    requests = [...requests, ...r];
+  } catch {
+    res.status(200).json({
+      message: "not saved",
+    });
+  }
+});
+
+router.post("/approve", async (req, res) => {
+  try {
+    console.log(req.body, "approvereqs");
+    const book = await Book.findById(req.body.bookId);
+    let requests = book.requests;
+    console.log(requests, "reqs");
+    let r = requests.find((k) => k._id.toString() == req.body._id);
+    if(r){
+    r.approved = true;
+    console.log(r);
+
+    requests = [...requests.filter((k)=>!(k._id==r._id)), { ...r }];
+    book.requests = requests;
+    await book.save();
+    res.status(200).json({
+      message: "successful",
+    });
+  }
+  else{
+    res.status(200).json({
+      message: "not saved",
+    });
+  }
   } catch {
     res.status(200).json({
       message: "not saved",
