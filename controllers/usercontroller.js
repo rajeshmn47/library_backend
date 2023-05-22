@@ -126,7 +126,6 @@ router.post("/register", async (req, res) => {
   user1.email = req.body.email;
   user1.password = req.body.password;
   user1.phonenumber = "phonenumber";
-  user1.type = "admin";
   User.findOne({ email: req.body.email }, async function (err, user) {
     if (err) {
       console.log("Error in finding user in Sign-in ");
